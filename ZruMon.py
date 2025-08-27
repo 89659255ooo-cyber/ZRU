@@ -1,3 +1,4 @@
+import dearpygui.dearpygui as dpg #pip install dearpygui
 import subprocess
 import sys #100012
 import time #2
@@ -130,7 +131,7 @@ time.sleep(1)
 print(f"Wait 1")
 time.sleep(1)
 ########################################################
-import dearpygui.dearpygui as dpg #pip install dearpygui
+
 from math import sin, cos
 import threading
 import time
@@ -811,23 +812,3 @@ tServer.start()
 tBot.start();
 dpg.start_dearpygui()
 dpg.destroy_context()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

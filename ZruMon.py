@@ -5,78 +5,89 @@ import time
 import socket
 import datetime
 #pip install modbus-tk
-#pip install numpy
 import sys
-import modbus_tk #python.exe -m pip install --upgrade pip
+import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
 
+cmdForModBus =""
 def modBServ (arg):
+    global cmdForModBus;
     try:
         #Create the server
         server = modbus_tcp.TcpServer()
         server.start()
         slave_1 = server.add_slave(1)
         slave_1.add_block('0', cst.HOLDING_REGISTERS, 0, 100)
+        print(f"Stert modbus_tcp.TcpServer")
         while True:
-            print(f"modbus_tcp 1")
-            #cmd = "set_values 1 0 1 4 5 6 7 8 9 10"
-            #args = cmd.split(' ')
-            cmd = sys.stdin.readline()
-            args = cmd.split(' ')
-            print(f"modbus_tcp 2")
-            if cmd.find('quit') == 0:
-                print(f"modbus_tcp 3")
-                sys.stdout.write('bye-bye\r\n')
-                break
+            time.sleep(0.1)
+            if (cmdForModBus != ""):
+                print(f"modbus_tcp 1")
+                #cmd = "set_values 1 0 1 4 5 6 7 8 9 10"
+                #args = cmd.split(' ')
+                cmd = cmdForModBus# sys.stdin.readline()
+                args = cmd.split(' ')
+                print(f"modbus_tcp 2")
+                if cmd.find('quit') == 0:
+                    print(f"modbus_tcp 3")
+                    sys.stdout.write('bye-bye\\r\\n')
+                    break
 
-            elif args[0] == 'add_slave':
-                print(f"modbus_tcp 4")
-                slave_id = int(args[1])
-                server.add_slave(slave_id)
-                sys.stdout.write('done: slave %d added\r\n' % slave_id)
+                elif args[0] == 'add_slave':
+                    print(f"modbus_tcp 4")
+                    slave_id = int(args[1])
+                    server.add_slave(slave_id)
+                    sys.stdout.write('done: slave %d added\\r\\n' % slave_id)
+                    cmdForModBus = ""
 
-            elif args[0] == 'add_block':
-                print(f"modbus_tcp 5")
-                slave_id = int(args[1])
-                name = args[2]
-                block_type = int(args[3])
-                starting_address = int(args[4])
-                length = int(args[5])
-                slave = server.get_slave(slave_id)
-                slave.add_block(name, block_type, starting_address, length)
-                sys.stdout.write('done: block %s added\r\n' % name)
+                elif args[0] == 'add_block':
+                    print(f"modbus_tcp 5")
+                    slave_id = int(args[1])
+                    name = args[2]
+                    block_type = int(args[3])
+                    starting_address = int(args[4])
+                    length = int(args[5])
+                    slave = server.get_slave(slave_id)
+                    slave.add_block(name, block_type, starting_address, length)
+                    sys.stdout.write('done: block %s added\\r\\n' % name)
+                    cmdForModBus = ""
 
-            elif args[0] == 'set_values':
-                print(f"modbus_tcp 6")
-                slave_id = int(args[1])
-                name = args[2]
-                address = int(args[3])
-                values = []
-                print(args[4:])
-                for val in args[4:]:
-                    print(val)
-                    values.append(int(val))
-                slave = server.get_slave(slave_id)
-                slave.set_values(name, address, values)
-                values = slave.get_values(name, address, len(values))
-                sys.stdout.write('done: values written: %s\r\n' % str(values))
+                elif args[0] == 'set_values':
+                    print(f"modbus_tcp 6")
+                    slave_id = int(args[1])
+                    name = args[2]
+                    address = int(args[3])
+                    values = []
+                    print(args[4:])
+                    for val in args[4:]:
+                        if (val != " "):
+                            if (val != ""):
+                                print(val)
+                                values.append(int(val))
+                    slave = server.get_slave(slave_id)
+                    slave.set_values(name, address, values)
+                    values = slave.get_values(name, address, len(values))
+                    sys.stdout.write('done: values written: %s\\r\\n' % str(values))
+                    cmdForModBus = ""
 
-            elif args[0] == 'get_values':
-                #вернуть значения n элементов по указанному адресу указанного блока
-                print(f"modbus_tcp 7")
-                slave_id = int(args[1])
-                name = args[2]
-                address = int(args[3])
-                length = int(args[4])
-                slave = server.get_slave(slave_id)
-                values = slave.get_values(name, address, length)
-                sys.stdout.write('done: values read: %s\r\n' % str(values))
-
-            else:
-                sys.stdout.write("unknown command %s\r\n" % args[0])
+                elif args[0] == 'get_values':
+                    #вернуть значения n элементов по указанному адресу указанного блока
+                    print(f"modbus_tcp 7")
+                    slave_id = int(args[1])
+                    name = args[2]
+                    address = int(args[3])
+                    length = int(args[4])
+                    slave = server.get_slave(slave_id)
+                    values = slave.get_values(name, address, length)
+                    sys.stdout.write('done: values read: %s\\r\\n' % str(values))
+                    cmdForModBus = ""
+                else:
+                    sys.stdout.write("unknown command %s\\r\\n" % args[0])
+                    cmdForModBus = ""
     finally:
-        server.stop()
+        print(f"Ошибка команды для сервер")
+        #server.stop()
 
 
 def mServer(arg):
@@ -316,7 +327,7 @@ def threaded_function(arg): #В потоке читаем СОКЕТ
                   + str(ADC_Arr[6]).rjust(5) + " "
                   + str(ADC_Arr[7]).rjust(5) + " "
                   + str(ADC_Arr[8]).rjust(5) + " "
-                  + str(timSend - oltT))+"\n" + input_text_tag_str_buf
+                  + str(timSend - oltT))+"\\n" + input_text_tag_str_buf
                 print(str(incVm)+" - "+str(len(input_text_tag_str_buf)))
                 input_text_tag_str_buf = input_text_tag_str_buf[:25000]
                 dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
@@ -429,10 +440,10 @@ def slider_callback_Set_Ofset(sender, app_data, user_data):
     Ofset = app_data
 
 with dpg.font_registry():
-    with dpg.font(f'C:\\Windows\\Fonts\\arialbi.ttf', 9, default_font=True, id="Default font"):
+    with dpg.font(f'C:\\\\Windows\\\\Fonts\\\\arialbi.ttf', 9, default_font=True, id="Default font"):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
-with dpg.window(label="Data log.", width=700, height=500, pos=[0, 200]):
+with dpg.window(label="Data log.", width=700, height=500, pos=[0, 300]):
     input_text_tag = dpg.add_input_text(
         hint="Some description",
         multiline=True,
@@ -444,7 +455,7 @@ def get_IP_Loc ():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     print(s.getsockname()[0])
-    input_text_tag_str_buf ="\nIP loc: " + str(s.getsockname()[0])+", IP point: "+ ip_point+ input_text_tag_str_buf
+    input_text_tag_str_buf ="\\nIP loc: " + str(s.getsockname()[0])+", IP point: "+ ip_point+ input_text_tag_str_buf
     s.close()
     dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
     
@@ -511,17 +522,25 @@ def update_lan():
                                               + str(ADC_Arr[6]).rjust(5) + " "
                                               + str(ADC_Arr[7]).rjust(5) + " "
                                               + str(ADC_Arr[8]).rjust(5) + " "
-                                              + str(timSend - oltT)) + "\n" + input_text_tag_str_buf
+                                              + str(timSend - oltT)) + "\\n" + input_text_tag_str_buf
                     dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
                 oltT = timSend
                 # print()
                 # time.sleep(3)  # Ждем 1.001 сек
                 # print(time.time()-oltT)
 
-
+def _log(sender, app_data, user_data):
+    global cmdForModBus,input_text_tag_str_buf
+    cmdForModBus = app_data;
+    rez =f"sender: {sender}, \t app_data: {app_data}, \t user_data: {user_data}"
+    print(rez)
+    input_text_tag_str_buf = rez+"\n"+input_text_tag_str_buf[:25000]
+    dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
 
 with dpg.window(label="Setting:"):
         #with dpg.group(horizontal=True):
+        dpg.add_input_text(tag="input",default_value = "set_values 1 0 1 4 5 6 7 8 9 10", hint="Write CMD",  width=230, callback=_log)
+        dpg.add_input_text(tag="output", default_value="get_values 1 0 1 4 5 6 7 8 9 10", hint="Write CMD", width=230,  callback=_log)
         dpg.add_button(label="Get IP_Loc", callback=get_IP_Loc)
         dpg.add_button(label="Update INFO", callback=update_IFO)
         dpg.add_button(label="Start thread", callback=update_series_start)
@@ -654,6 +673,3 @@ t.start()  #Запускаем поток
 tServer.start()
 
 dpg.start_dearpygui()
-
-dpg.destroy_context()
-

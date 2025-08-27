@@ -5,6 +5,7 @@ import time
 import socket
 import datetime
 #pip install modbus-tk
+#pip install numpy
 import sys
 import modbus_tk #python.exe -m pip install --upgrade pip
 import modbus_tk.defines as cst
@@ -655,3 +656,4 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+

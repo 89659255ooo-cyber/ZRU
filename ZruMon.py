@@ -115,8 +115,7 @@ def threaded_start_bot( args ):
     bot.infinity_polling()
 print(f"tBot strt ...")
 
-tBot = threading.Thread(target=threaded_start_bot, args=(15,))  # Настраиваем поток
-#tBot.daemon = True
+
 
 print(f"Wait 4")
 time.sleep(1)
@@ -138,7 +137,7 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "6";
+revForPO = "7";
 StertCmdForModBus = "set_values 1 0 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
 def modBServ (arg):
@@ -364,6 +363,9 @@ def threaded_function_sin_mon(arg): #В потоке читаем СОКЕТ
         if (start):
             time.sleep(0.002);  # Ждем 0,02сек
             update_series();
+
+tBot = threading.Thread(target=threaded_start_bot, args=(15,))  # Настраиваем поток
+tBot.daemon = True
 
 tCOM = threading.Thread(target=threaded_function_sin_mon, args=(15,))  # Настраиваем поток
 tCOM.daemon = True

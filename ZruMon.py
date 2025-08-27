@@ -1,6 +1,6 @@
 import dearpygui.dearpygui as dpg #pip install dearpygui
 import subprocess
-import sys #100017
+import sys #10002
 import time #2
 
 def install_and_import(package): #3
@@ -142,8 +142,13 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
+<<<<<<< HEAD
 revForPO = "17";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
+=======
+revForPO = "2";
+StertCmdForModBus = "set_values 1 0 1 4 5 6 7 8 7 "+revForPO;
+>>>>>>> 94adf0be157f51b797e8aa5a959a097667977628
 cmdForModBus = StertCmdForModBus
 def modBServ (arg):
     global cmdForModBus;
@@ -815,5 +820,6 @@ tServer.start()
 tBot.start();
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 
 

@@ -1,7 +1,7 @@
 import subprocess
 import sys
 import time
-import threading
+
 def install_and_import(package):
     try:
         __import__(package)
@@ -29,7 +29,7 @@ import telebot
 from telebot import types
 import pyautogui #pip3 install pyautogui
 from PIL import Image
-
+import threading
 def resize_jpg_image(input_path, output_path, new_width, new_height):
     """
     Изменяет размер JPG-изображения.
@@ -792,6 +792,7 @@ tServer.start()
 
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 
 
 

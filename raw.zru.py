@@ -4,6 +4,7 @@ import threading
 import time
 import socket
 import datetime
+#pip install numpy
 #pip install modbus-tk
 import sys
 import modbus_tk
@@ -674,4 +675,5 @@ tServer.start()
 
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 

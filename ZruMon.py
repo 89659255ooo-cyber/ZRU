@@ -6,7 +6,7 @@ import socket
 import datetime
 #pip install modbus-tk
 import sys
-import modbus_tk
+import modbus_tk #python.exe -m pip install --upgrade pip
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
 
@@ -653,4 +653,5 @@ t.start()  #Запускаем поток
 tServer.start()
 
 dpg.start_dearpygui()
+
 dpg.destroy_context()

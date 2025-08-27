@@ -667,7 +667,7 @@ with dpg.window(label="Plot In", tag="win_In" , width=800, height=1200, pos=[750
 
 
 
-dpg.create_viewport(title='Custom Title', width=1600, height=600)
+dpg.create_viewport(title='ZruMod '+' : Rev '+revForPO, width=1600, height=600)
 dpg.setup_dearpygui()
 dpg.show_viewport()
 tCOM.start()  # Запускаем

@@ -15,7 +15,7 @@ cmdForModBus = StertCmdForModBus
 def modBServ (arg):
     global cmdForModBus;
     try:
-        time.sleep(20)
+        time.sleep(1)
         #Create the server
         server = modbus_tcp.TcpServer()
         server.start()
@@ -676,6 +676,7 @@ tServer.start()
 
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 
 
 

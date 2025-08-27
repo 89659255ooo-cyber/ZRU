@@ -19,10 +19,10 @@ def install_and_import(package):
             print(f"Ошибка установки библиотеки '{package}': {e}")
             sys.exit(1)
 
-install_and_import("asyncpg");
-install_and_import("telebot");
-install_and_import("pyautogui");
-install_and_import("PIL");
+install_and_import("asyncpg"); print("install 1... ")
+install_and_import("telebot"); print("install 2... ")
+install_and_import("pyautogui"); print("install 3... ")
+install_and_import("PIL"); print("install 4... ")
 
 import asyncpg
 import telebot
@@ -30,6 +30,8 @@ from telebot import types
 import pyautogui #pip3 install pyautogui
 from PIL import Image
 import threading
+
+print("creat boot")
 def resize_jpg_image(input_path, output_path, new_width, new_height):
     """
     Изменяет размер JPG-изображения.
@@ -111,9 +113,11 @@ def threaded_start_bot( args ):
     print("Bot Satrted... ")
     time.sleep(1)
     bot.infinity_polling()
+print(f"tBot strt ...")
+
 tBot = threading.Thread(target=threaded_start_bot, args=(15,))  # Настраиваем поток
 #tBot.daemon = True
-tBot.start();
+
 print(f"Wait 4")
 time.sleep(1)
 print(f"Wait 3")
@@ -134,7 +138,7 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "5";
+revForPO = "6";
 StertCmdForModBus = "set_values 1 0 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
 def modBServ (arg):
@@ -798,7 +802,7 @@ dpg.show_viewport()
 tCOM.start()  # Запускаем
 t.start()  #Запускаем поток
 tServer.start()
-
+tBot.start();
 dpg.start_dearpygui()
 dpg.destroy_context()
 

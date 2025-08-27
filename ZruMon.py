@@ -113,6 +113,13 @@ def threaded_start_bot( arg):
 tBot = threading.Thread(target=threaded_start_bot, args=(15,))  # Настраиваем поток
 tBot.daemon = True
 tBot.start();
+time.sleep(1)
+print(f"Wait 3")
+time.sleep(1)
+print(f"Wait 2")
+time.sleep(1)
+print(f"Wait 1")
+time.sleep(1)
 ########################################################
 import dearpygui.dearpygui as dpg #pip install dearpygui
 from math import sin, cos
@@ -125,7 +132,7 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "3"; 
+revForPO = "4";
 StertCmdForModBus = "set_values 1 0 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
 def modBServ (arg):

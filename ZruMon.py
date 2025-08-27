@@ -9,8 +9,9 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-
-cmdForModBus = "set_values 1 0 1 4 5 6 7 8 9 13"
+revForPO = "1"; 
+StertCmdForModBus = "set_values 1 0 1 4 5 6 7 8 9 13 "+revForPO;
+cmdForModBus = StertCmdForModBus
 def modBServ (arg):
     global cmdForModBus;
     try:
@@ -531,7 +532,7 @@ def update_lan():
                 # print(time.time()-oltT)
 
 def _log(sender, app_data, user_data):
-    global cmdForModBus,input_text_tag_str_buf
+    global cmdForModBus,input_text_tag_str_buf, StertCmdForModBus
     cmdForModBus = app_data;
     rez =f"sender: {sender}, \t app_data: {app_data}, \t user_data: {user_data}"
     print(rez)
@@ -540,7 +541,7 @@ def _log(sender, app_data, user_data):
 
 with dpg.window(label="Setting:"):
         #with dpg.group(horizontal=True):
-        dpg.add_input_text(tag="input",default_value = "set_values 1 0 1 4 5 6 7 8 9 13", hint="Write CMD",  width=230, callback=_log)
+        dpg.add_input_text(tag="input",default_value = StertCmdForModBus, hint="Write CMD",  width=230, callback=_log)
         dpg.add_input_text(tag="output", default_value="get_values 1 0 1 4 5 6 7 8 9 10", hint="Write CMD", width=230,  callback=_log)
         dpg.add_button(label="Get IP_Loc", callback=get_IP_Loc)
         dpg.add_button(label="Update INFO", callback=update_IFO)
@@ -675,6 +676,7 @@ tServer.start()
 
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 
 
 

@@ -673,3 +673,5 @@ t.start()  #Запускаем поток
 tServer.start()
 
 dpg.start_dearpygui()
+dpg.destroy_context()
+

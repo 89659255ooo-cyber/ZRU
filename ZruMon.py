@@ -57,62 +57,66 @@ def resize_jpg_image(input_path, output_path, new_width, new_height):
     except Exception as e:
         print(f"Произошла ошибка: {e}")
 
-token = '8222603528:AAHfOt8TWrkICMjjq51T5wRbozHsa2tBklo'
-bot=telebot.TeleBot(token)
-@bot.message_handler(commands=['start'])
-def start_message(message):
-    bot.send_message(message.chat.id,'Привет')
-    markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1=types.KeyboardButton("/button1")
-    markup.add(item1)
-    item2=types.KeyboardButton("/button2")
-    markup.add(item2)
-    bot.send_message(message.chat.id,'Выберите что вам надо',reply_markup=markup)
 
-@bot.message_handler(commands=['button1'])
-def button_message(message):
-    markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1=types.KeyboardButton("/button1")
-    markup.add(item1)
-    item2=types.KeyboardButton("/button2")
-    markup.add(item2)
-    bot.send_message(message.chat.id,'Выберите что вам надо',reply_markup=markup)
-    myScreenshot = pyautogui.screenshot()
-    myScreenshot.save(r'figure.jpg')
-    # Пример использования функции
-    input_file = "figure.jpg"  # Укажите путь к вашему оригинальному изображению
-    output_file = "resized_image.jpg"
-    new_width = 500
-    new_height = 300
-    resize_jpg_image(input_file, output_file, new_width, new_height)
-    bot.send_photo(chat_id=message.chat.id, photo=open('resized_image.jpg', 'rb'))
-
-@bot.message_handler(commands=['button2'])
-def button_message(message):
-    markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1=types.KeyboardButton("/button1")
-    markup.add(item1)
-    item2=types.KeyboardButton("/button2")
-    markup.add(item2)
-    bot.send_message(message.chat.id,'Выберите что вам надо',reply_markup=markup)
-    myScreenshot = pyautogui.screenshot()
-    myScreenshot.save(r'figure.jpg')
-    bot.send_photo(chat_id=message.chat.id, photo=open('figure.jpg', 'rb'))
-
-@bot.message_handler(content_types='text')
-def message_reply(message):
-    if message.text=="Кнопка":
-        markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1=types.KeyboardButton("Кнопка 2")
-        markup.add(item1)
-        bot.send_message(message.chat.id,'Выберите что вам надо',reply_markup=markup)
-    elif message.text=="Кнопка 2":
-        bot.send_message(message.chat.id,'Спасибо за прочтение статьи!')
 
 def threaded_start_bot( args ):
+    global bot
     print("Bot Satrted... ")
     time.sleep(1)
+    token = '8222603528:AAHfOt8TWrkICMjjq51T5wRbozHsa2tBklo'
+    bot = telebot.TeleBot(token)
+
+    @bot.message_handler(commands=['start'])
+    def start_message(message):
+        bot.send_message(message.chat.id, 'Привет')
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("/button1")
+        markup.add(item1)
+        item2 = types.KeyboardButton("/button2")
+        markup.add(item2)
+        bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
+
+    @bot.message_handler(commands=['button1'])
+    def button_message(message):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("/button1")
+        markup.add(item1)
+        item2 = types.KeyboardButton("/button2")
+        markup.add(item2)
+        bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
+        myScreenshot = pyautogui.screenshot()
+        myScreenshot.save(r'figure.jpg')
+        # Пример использования функции
+        input_file = "figure.jpg"  # Укажите путь к вашему оригинальному изображению
+        output_file = "resized_image.jpg"
+        new_width = 500
+        new_height = 300
+        resize_jpg_image(input_file, output_file, new_width, new_height)
+        bot.send_photo(chat_id=message.chat.id, photo=open('resized_image.jpg', 'rb'))
+
+    @bot.message_handler(commands=['button2'])
+    def button_message(message):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("/button1")
+        markup.add(item1)
+        item2 = types.KeyboardButton("/button2")
+        markup.add(item2)
+        bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
+        myScreenshot = pyautogui.screenshot()
+        myScreenshot.save(r'figure.jpg')
+        bot.send_photo(chat_id=message.chat.id, photo=open('figure.jpg', 'rb'))
+
+    @bot.message_handler(content_types='text')
+    def message_reply(message):
+        if message.text == "Кнопка":
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            item1 = types.KeyboardButton("Кнопка 2")
+            markup.add(item1)
+            bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
+        elif message.text == "Кнопка 2":
+            bot.send_message(message.chat.id, 'Спасибо за прочтение статьи!')
     bot.infinity_polling()
+
 print(f"tBot strt ...")
 
 
@@ -137,7 +141,7 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "7";
+revForPO = "8";
 StertCmdForModBus = "set_values 1 0 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
 def modBServ (arg):

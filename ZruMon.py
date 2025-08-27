@@ -141,7 +141,7 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "10";
+revForPO = "11";
 StertCmdForModBus = "set_values 1 0 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
 def modBServ (arg):
@@ -811,6 +811,7 @@ tServer.start()
 tBot.start();
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 
 
 

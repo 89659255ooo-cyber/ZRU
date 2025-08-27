@@ -592,7 +592,7 @@ def get_IP_Loc ():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     print(s.getsockname()[0])
-    input_text_tag_str_buf ="\\nIP loc: " + str(s.getsockname()[0])+", IP point: "+ ip_point+ input_text_tag_str_buf
+    input_text_tag_str_buf ="\n" + "IP loc: " + str(s.getsockname()[0])+", IP point: "+ ip_point+ input_text_tag_str_buf
     s.close()
     dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
     

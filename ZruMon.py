@@ -540,7 +540,7 @@ def _log(sender, app_data, user_data):
 
 with dpg.window(label="Setting:"):
         #with dpg.group(horizontal=True):
-        dpg.add_input_text(tag="input",default_value = "set_values 1 0 1 4 5 6 7 8 9 10", hint="Write CMD",  width=230, callback=_log)
+        dpg.add_input_text(tag="input",default_value = "set_values 1 0 1 4 5 6 7 8 9 13", hint="Write CMD",  width=230, callback=_log)
         dpg.add_input_text(tag="output", default_value="get_values 1 0 1 4 5 6 7 8 9 10", hint="Write CMD", width=230,  callback=_log)
         dpg.add_button(label="Get IP_Loc", callback=get_IP_Loc)
         dpg.add_button(label="Update INFO", callback=update_IFO)
@@ -675,6 +675,7 @@ tServer.start()
 
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 
 
 

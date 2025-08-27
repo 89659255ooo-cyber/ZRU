@@ -10,7 +10,7 @@ import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
 
-cmdForModBus = "set_values 1 0 1 4 5 6 7 8 9 11"
+cmdForModBus = "set_values 1 0 1 4 5 6 7 8 9 13"
 def modBServ (arg):
     global cmdForModBus;
     try:
@@ -675,6 +675,7 @@ tServer.start()
 
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 
 
 

@@ -143,7 +143,7 @@ import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
 revForPO = "17";
-StertCmdForModBus = "set_values 1 0 1 4 5 6 7 8 7 "+revForPO;
+StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
 def modBServ (arg):
     global cmdForModBus;
@@ -153,7 +153,10 @@ def modBServ (arg):
         server = modbus_tcp.TcpServer()
         server.start()
         slave_1 = server.add_slave(1)
-        slave_1.add_block('0', cst.HOLDING_REGISTERS, 0, 100)
+        slave_1.add_block('1', cst.COILS, 0, 10)
+        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 10)
+        slave_1.add_block('3', cst.HOLDING_REGISTERS, 0, 10)
+        slave_1.add_block('4', cst.ANALOG_INPUTS, 0, 10)
         print(f"Stert modbus_tcp.TcpServer")
         while True:
             time.sleep(0.1)
@@ -678,7 +681,7 @@ def _log(sender, app_data, user_data):
 with dpg.window(label="Setting:"):
         #with dpg.group(horizontal=True):
         dpg.add_input_text(tag="input",default_value = StertCmdForModBus, hint="Write CMD",  width=230, callback=_log)
-        dpg.add_input_text(tag="output", default_value="get_values 1 0 1 4 5 6 7 8 9 10", hint="Write CMD", width=230,  callback=_log)
+        dpg.add_input_text(tag="output", default_value="set_values 1 4 1 4 5 6 7 8 9 10", hint="Write CMD", width=230,  callback=_log)
         dpg.add_button(label="Get IP_Loc", callback=get_IP_Loc)
         dpg.add_button(label="Update INFO", callback=update_IFO)
         dpg.add_button(label="Start thread", callback=update_series_start)

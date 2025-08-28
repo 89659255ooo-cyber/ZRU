@@ -195,18 +195,18 @@ def modBServ (arg):
             slave = server.get_slave(slave_id)
             slave.set_values(name, address, values)
             values = slave.get_values(name, address, len(values))
-
+        countSeck = 0
         while True:
             time.sleep(0.1)
+            countSeck=countSeck+1;
+            cmdForModBus = 'set_values 1 ' + str( g + 1) + ' 0 '+str(countSeck)+' 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ' + str(g)
             if (cmdForModBus != ""):
-                print(f"modbus_tcp 1")
                 #cmd = "set_values 1 0 1 4 5 6 7 8 9 10"
                 #args = cmd.split(' ')
                 cmd = cmdForModBus# sys.stdin.readline()
                 input_text_tag_str_buf = "\n" + cmd + input_text_tag_str_buf
                 dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
                 args = cmd.split(' ')
-                print(f"modbus_tcp 2")
                 if cmd.find('quit') == 0:
                     print(f"modbus_tcp 3")
                     sys.stdout.write('bye-bye\\r\\n')
@@ -232,21 +232,18 @@ def modBServ (arg):
                     cmdForModBus = ""
 
                 elif args[0] == 'set_values':
-                    print(f"modbus_tcp 6")
                     slave_id = int(args[1])
                     name = args[2]
                     address = int(args[3])
                     values = []
-                    print(args[4:])
+                    #print(args[4:])
                     for val in args[4:]:
                         if (val != " "):
                             if (val != ""):
-                                print(val)
                                 values.append(int(val))
                     slave = server.get_slave(slave_id)
                     slave.set_values(name, address, values)
-                    values = slave.get_values(name, address, len(values))
-                    sys.stdout.write('done: values written: %s\\r\\n' % str(values))
+                    #values = slave.get_values(name, address, len(values))
                     cmdForModBus = ""
 
                 elif args[0] == 'get_values':
@@ -741,4 +738,5 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 

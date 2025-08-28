@@ -64,7 +64,7 @@ def threaded_start_bot( args ): #4
     global bot
     print("Bot Satrted... ")
     time.sleep(1)
-    token = '8222603528:AAHfOt8TWrkICMjjq51T5wRbozHsa2tBklo'
+    token = '8222603528:41444444'
     bot = telebot.TeleBot(token)
 
     @bot.message_handler(commands=['start'])

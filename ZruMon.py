@@ -16,106 +16,6 @@ revForPO = "2";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
-def modBServ (arg):
-    global cmdForModBus;
-    try:
-        time.sleep(1)
-        #Create the server
-        server = modbus_tcp.TcpServer()
-        server.start()
-        slave_1 = server.add_slave(1)
-        slave_1.add_block('1', cst.COILS, 0, 32)
-        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 32)
-        slave_1.add_block('3', cst.HOLDING_REGISTERS, 0, 32)
-        slave_1.add_block('4', cst.ANALOG_INPUTS, 0, 32)
-        print(f"Stert modbus_tcp.TcpServer")
-        for g in range(4):
-            print(" ")
-            print(f"cmd modbus_tcp "+str(g))
-            cmd = 'set_values 1 '+str(g+1)+' 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 '+str(g)
-            args = cmd.split(' ')
-            slave_id = int(args[1])
-            name = args[2]
-            address = int(args[3])
-            values = []
-            print(cmd)
-            for val in args[4:]:
-                if (val != " "):
-                    if (val != ""):
-                        values.append(int(val))
-            slave = server.get_slave(slave_id)
-            slave.set_values(name, address, values)
-            values = slave.get_values(name, address, len(values))
-
-        while True:
-            time.sleep(0.1)
-            if (cmdForModBus != ""):
-                print(f"modbus_tcp 1")
-                #cmd = "set_values 1 0 1 4 5 6 7 8 9 10"
-                #args = cmd.split(' ')
-                cmd = cmdForModBus# sys.stdin.readline()
-                args = cmd.split(' ')
-                print(f"modbus_tcp 2")
-                if cmd.find('quit') == 0:
-                    print(f"modbus_tcp 3")
-                    sys.stdout.write('bye-bye\\r\\n')
-                    break
-
-                elif args[0] == 'add_slave':
-                    print(f"modbus_tcp 4")
-                    slave_id = int(args[1])
-                    server.add_slave(slave_id)
-                    sys.stdout.write('done: slave %d added\\r\\n' % slave_id)
-                    cmdForModBus = ""
-
-                elif args[0] == 'add_block':
-                    print(f"modbus_tcp 5")
-                    slave_id = int(args[1])
-                    name = args[2]
-                    block_type = int(args[3])
-                    starting_address = int(args[4])
-                    length = int(args[5])
-                    slave = server.get_slave(slave_id)
-                    slave.add_block(name, block_type, starting_address, length)
-                    sys.stdout.write('done: block %s added\\r\\n' % name)
-                    cmdForModBus = ""
-
-                elif args[0] == 'set_values':
-                    print(f"modbus_tcp 6")
-                    slave_id = int(args[1])
-                    name = args[2]
-                    address = int(args[3])
-                    values = []
-                    print(args[4:])
-                    for val in args[4:]:
-                        if (val != " "):
-                            if (val != ""):
-                                print(val)
-                                values.append(int(val))
-                    slave = server.get_slave(slave_id)
-                    slave.set_values(name, address, values)
-                    values = slave.get_values(name, address, len(values))
-                    sys.stdout.write('done: values written: %s\\r\\n' % str(values))
-                    cmdForModBus = ""
-
-                elif args[0] == 'get_values':
-                    #вернуть значения n элементов по указанному адресу указанного блока
-                    print(f"modbus_tcp 7")
-                    slave_id = int(args[1])
-                    name = args[2]
-                    address = int(args[3])
-                    length = int(args[4])
-                    slave = server.get_slave(slave_id)
-                    values = slave.get_values(name, address, length)
-                    sys.stdout.write('done: values read: %s\\r\\n' % str(values))
-                    cmdForModBus = ""
-                else:
-                    sys.stdout.write("unknown command %s\\r\\n" % args[0])
-                    cmdForModBus = ""
-    finally:
-        print(f"Ошибка команды для сервер")
-        #server.stop()
-
 
 def mServer(arg):
     host = '127.0.0.1'  # Или 'localhost'
@@ -143,8 +43,7 @@ def mServer(arg):
         server_socket.close()
         print(f"  ")
 
-tServer = threading.Thread(target=modBServ, args=(15,))  # Настраиваем поток
-tServer.daemon = True
+
 
 ip_point = '192.168.50.208'
 #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -264,7 +163,112 @@ def threaded_function_sin_mon(arg): #В потоке читаем СОКЕТ
 tCOM = threading.Thread(target=threaded_function_sin_mon, args=(15,))  # Настраиваем поток
 tCOM.daemon = True
 
+def modBServ (arg):
+    global cmdForModBus,input_text_tag_str_buf;
+    try:
+        time.sleep(1)
+        #Create the server
+        server = modbus_tcp.TcpServer()
+        server.start()
+        slave_1 = server.add_slave(1)
+        slave_1.add_block('1', cst.COILS, 0, 32)
+        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 32)
+        slave_1.add_block('3', cst.HOLDING_REGISTERS, 0, 32)
+        slave_1.add_block('4', cst.ANALOG_INPUTS, 0, 32)
+        print(f"Stert modbus_tcp.TcpServer")
+        for g in range(4):
+            print(" ")
+            print(f"cmd modbus_tcp "+str(g))
+            cmd = 'set_values 1 '+str(g+1)+' 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 '+str(g)
+            args = cmd.split(' ')
+            slave_id = int(args[1])
+            name = args[2]
+            address = int(args[3])
+            values = []
+            #print(cmd)
+            input_text_tag_str_buf = "\n" + cmd + input_text_tag_str_buf
+            dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
+            for val in args[4:]:
+                if (val != " "):
+                    if (val != ""):
+                        values.append(int(val))
+            slave = server.get_slave(slave_id)
+            slave.set_values(name, address, values)
+            values = slave.get_values(name, address, len(values))
 
+        while True:
+            time.sleep(0.1)
+            if (cmdForModBus != ""):
+                print(f"modbus_tcp 1")
+                #cmd = "set_values 1 0 1 4 5 6 7 8 9 10"
+                #args = cmd.split(' ')
+                cmd = cmdForModBus# sys.stdin.readline()
+                input_text_tag_str_buf = "\n" + cmd + input_text_tag_str_buf
+                dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
+                args = cmd.split(' ')
+                print(f"modbus_tcp 2")
+                if cmd.find('quit') == 0:
+                    print(f"modbus_tcp 3")
+                    sys.stdout.write('bye-bye\\r\\n')
+                    break
+
+                elif args[0] == 'add_slave':
+                    print(f"modbus_tcp 4")
+                    slave_id = int(args[1])
+                    server.add_slave(slave_id)
+                    sys.stdout.write('done: slave %d added\\r\\n' % slave_id)
+                    cmdForModBus = ""
+
+                elif args[0] == 'add_block':
+                    print(f"modbus_tcp 5")
+                    slave_id = int(args[1])
+                    name = args[2]
+                    block_type = int(args[3])
+                    starting_address = int(args[4])
+                    length = int(args[5])
+                    slave = server.get_slave(slave_id)
+                    slave.add_block(name, block_type, starting_address, length)
+                    sys.stdout.write('done: block %s added\\r\\n' % name)
+                    cmdForModBus = ""
+
+                elif args[0] == 'set_values':
+                    print(f"modbus_tcp 6")
+                    slave_id = int(args[1])
+                    name = args[2]
+                    address = int(args[3])
+                    values = []
+                    print(args[4:])
+                    for val in args[4:]:
+                        if (val != " "):
+                            if (val != ""):
+                                print(val)
+                                values.append(int(val))
+                    slave = server.get_slave(slave_id)
+                    slave.set_values(name, address, values)
+                    values = slave.get_values(name, address, len(values))
+                    sys.stdout.write('done: values written: %s\\r\\n' % str(values))
+                    cmdForModBus = ""
+
+                elif args[0] == 'get_values':
+                    #вернуть значения n элементов по указанному адресу указанного блока
+                    print(f"modbus_tcp 7")
+                    slave_id = int(args[1])
+                    name = args[2]
+                    address = int(args[3])
+                    length = int(args[4])
+                    slave = server.get_slave(slave_id)
+                    values = slave.get_values(name, address, length)
+                    sys.stdout.write('done: values read: %s\\r\\n' % str(values))
+                    cmdForModBus = ""
+                else:
+                    sys.stdout.write("unknown command %s\\r\\n" % args[0])
+                    cmdForModBus = ""
+    finally:
+        print(f"Ошибка команды для сервер")
+        #server.stop()
+
+tServer = threading.Thread(target=modBServ, args=(15,))  # Настраиваем поток
+tServer.daemon = True
 #########
 import numpy as np
 vm=0;
@@ -737,3 +741,4 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+

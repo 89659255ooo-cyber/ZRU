@@ -24,11 +24,29 @@ def modBServ (arg):
         server = modbus_tcp.TcpServer()
         server.start()
         slave_1 = server.add_slave(1)
-        slave_1.add_block('1', cst.COILS, 0, 10)
-        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 10)
-        slave_1.add_block('3', cst.HOLDING_REGISTERS, 0, 10)
-        slave_1.add_block('4', cst.ANALOG_INPUTS, 0, 10)
+        slave_1.add_block('1', cst.COILS, 0, 32)
+        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 32)
+        slave_1.add_block('3', cst.HOLDING_REGISTERS, 0, 32)
+        slave_1.add_block('4', cst.ANALOG_INPUTS, 0, 32)
         print(f"Stert modbus_tcp.TcpServer")
+        for g in range(4):
+            print(" ")
+            print(f"cmd modbus_tcp "+str(g))
+            cmd = 'set_values 1 '+str(g+1)+' 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 '+str(g)
+            args = cmd.split(' ')
+            slave_id = int(args[1])
+            name = args[2]
+            address = int(args[3])
+            values = []
+            print(cmd)
+            for val in args[4:]:
+                if (val != " "):
+                    if (val != ""):
+                        values.append(int(val))
+            slave = server.get_slave(slave_id)
+            slave.set_values(name, address, values)
+            values = slave.get_values(name, address, len(values))
+
         while True:
             time.sleep(0.1)
             if (cmdForModBus != ""):
@@ -717,4 +735,5 @@ tCOM.start()  # Запускаем
 t.start()  #Запускаем поток
 tServer.start()
 dpg.start_dearpygui()
+
 dpg.destroy_context()

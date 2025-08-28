@@ -674,10 +674,10 @@ def update_lan():
 def _log(sender, app_data, user_data):
     global cmdForModBus,input_text_tag_str_buf, StertCmdForModBus
     #cmdForModBus = app_data;
-    if (sender == input1): cmdForModBus ="set_values 1 1 "+input_text_tag_str_buf;  print(cmdForModBus);
-    if (sender == input2): cmdForModBus ="set_values 1 2 "+input_text_tag_str_buf;  print(cmdForModBus);
-    if (sender == input3): cmdForModBus ="set_values 1 3 "+input_text_tag_str_buf;  print(cmdForModBus);
-    if (sender == input4): cmdForModBus ="set_values 1 4 "+input_text_tag_str_buf;  print(cmdForModBus);
+    if (sender == "input1"): cmdForModBus ="set_values 1 1 "+app_data;  print(cmdForModBus);
+    if (sender == "input2"): cmdForModBus ="set_values 1 2 "+app_data;  print(cmdForModBus);
+    if (sender == "input3"): cmdForModBus ="set_values 1 3 "+app_data;  print(cmdForModBus);
+    if (sender == "input4"): cmdForModBus ="set_values 1 4 "+app_data;  print(cmdForModBus);
     rez =f"sender: {sender}, \t app_data: {app_data}, \t user_data: {user_data}"
     print(rez)
     #input_text_tag_str_buf = rez+"\n"+input_text_tag_str_buf[:25000]
@@ -852,6 +852,7 @@ tServer.start()
 tBot.start();
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 
 
 

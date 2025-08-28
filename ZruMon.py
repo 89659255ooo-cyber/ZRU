@@ -2,136 +2,6 @@ import dearpygui.dearpygui as dpg #pip install dearpygui
 import subprocess
 import sys #100017
 import time #2
-
-def install_and_import(package): #3
-    try:
-        __import__(package)
-    except ImportError:
-        print(f"Библиотека '{package}' не найдена, устанавливаем...")
-        try:
-            mnemonikaLib = package
-            if (mnemonikaLib == "asyncpg"): mnemonikaLib = "asyncpg";
-            if (mnemonikaLib == "telebot" ): mnemonikaLib = "pyTelegramBotAPI";
-            if (mnemonikaLib == "pyautogui"): mnemonikaLib = "pyautogui";
-            if (mnemonikaLib == "PIL"): mnemonikaLib = "Pillow"
-            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-            print(f"Библиотека '{package}' успешно установлена.")
-        except subprocess.CalledProcessError as e:
-            print(f"Ошибка установки библиотеки '{package}': {e}")
-            sys.exit(1)
-
-install_and_import("asyncpg"); print("install 1... ")
-install_and_import("telebot"); print("install 2... ")
-install_and_import("pyautogui"); print("install 3... ")
-install_and_import("PIL"); print("install 4... ")
-
-import asyncpg
-import telebot
-from telebot import types
-import pyautogui #pip3 install pyautogui
-from PIL import Image
-import threading
-
-print("creat boot")
-def resize_jpg_image(input_path, output_path, new_width, new_height):
-    """
-    Изменяет размер JPG-изображения.
-
-    Args:
-        input_path (str): Путь к исходному изображению.
-        output_path (str): Путь для сохранения измененного изображения.
-        new_width (int): Новая ширина изображения в пикселях.
-        new_height (int): Новая высота изображения в пикселях.
-    """
-    try:
-        # Открываем изображение
-        img = Image.open(input_path)
-
-        # Изменяем размер изображения
-        resized_img = img.resize((new_width, new_height))
-
-        # Сохраняем измененное изображение
-        resized_img.save(output_path)
-        print(f"Изображение успешно сохранено по пути: {output_path}")
-    except FileNotFoundError:
-        print(f"Ошибка: Файл изображения не найден по пути {input_path}")
-    except Exception as e:
-        print(f"Произошла ошибка: {e}")
-
-
-
-def threaded_start_bot( args ): #4
-    global bot
-    print("Bot Satrted... ")
-    time.sleep(1)
-    token = '8222603528:AAHfOt8TWrkICMjjq51T5wRbozHsa2tBklo'
-    bot = telebot.TeleBot(token)
-
-    @bot.message_handler(commands=['start'])
-    def start_message(message):
-        bot.send_message(message.chat.id, 'Привет')
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1 = types.KeyboardButton("/button1")
-        markup.add(item1)
-        item2 = types.KeyboardButton("/button2")
-        markup.add(item2)
-        bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
-
-    @bot.message_handler(commands=['button1'])
-    def button_message(message):
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1 = types.KeyboardButton("/button1")
-        markup.add(item1)
-        item2 = types.KeyboardButton("/button2")
-        markup.add(item2)
-        bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
-        myScreenshot = pyautogui.screenshot()
-        myScreenshot.save(r'figure.jpg')
-        # Пример использования функции
-        input_file = "figure.jpg"  # Укажите путь к вашему оригинальному изображению
-        output_file = "resized_image.jpg"
-        new_width = 500
-        new_height = 300
-        resize_jpg_image(input_file, output_file, new_width, new_height)
-        bot.send_photo(chat_id=message.chat.id, photo=open('resized_image.jpg', 'rb'))
-
-    @bot.message_handler(commands=['button2'])
-    def button_message(message):
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1 = types.KeyboardButton("/button1")
-        markup.add(item1)
-        item2 = types.KeyboardButton("/button2")
-        markup.add(item2)
-        bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
-        myScreenshot = pyautogui.screenshot()
-        myScreenshot.save(r'figure.jpg')
-        bot.send_photo(chat_id=message.chat.id, photo=open('figure.jpg', 'rb'))
-
-    @bot.message_handler(content_types='text')
-    def message_reply(message):
-        if message.text == "Кнопка":
-            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            item1 = types.KeyboardButton("Кнопка 2")
-            markup.add(item1)
-            bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
-        elif message.text == "Кнопка 2":
-            bot.send_message(message.chat.id, 'Спасибо за прочтение статьи!')
-    bot.infinity_polling()
-
-print(f"tBot strt ...")
-
-
-
-print(f"Wait 4")
-time.sleep(1)
-print(f"Wait 3")
-time.sleep(1)
-print(f"Wait 2")
-time.sleep(1)
-print(f"Wait 1")
-time.sleep(1)
-########################################################
-
 from math import sin, cos
 import threading
 import time
@@ -852,6 +722,7 @@ tServer.start()
 tBot.start();
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 
 
 

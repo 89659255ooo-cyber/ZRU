@@ -144,6 +144,7 @@ import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
 revForPO = "2";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
+CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
 def modBServ (arg):
     global cmdForModBus;
@@ -672,16 +673,18 @@ def update_lan():
 
 def _log(sender, app_data, user_data):
     global cmdForModBus,input_text_tag_str_buf, StertCmdForModBus
-    cmdForModBus = app_data;
+    #cmdForModBus = app_data;
+    if (sender == input1): cmdForModBus ="set_values 1 1 "+input_text_tag_str_buf;  print(cmdForModBus);
+    if (sender == input2): cmdForModBus ="set_values 1 2 "+input_text_tag_str_buf;  print(cmdForModBus);
+    if (sender == input3): cmdForModBus ="set_values 1 3 "+input_text_tag_str_buf;  print(cmdForModBus);
+    if (sender == input4): cmdForModBus ="set_values 1 4 "+input_text_tag_str_buf;  print(cmdForModBus);
     rez =f"sender: {sender}, \t app_data: {app_data}, \t user_data: {user_data}"
     print(rez)
-    input_text_tag_str_buf = rez+"\n"+input_text_tag_str_buf[:25000]
-    dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
+    #input_text_tag_str_buf = rez+"\n"+input_text_tag_str_buf[:25000]
+    #dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
 
 with dpg.window(label="Setting:"):
         #with dpg.group(horizontal=True):
-        dpg.add_input_text(tag="input",default_value = StertCmdForModBus, hint="Write CMD",  width=230, callback=_log)
-        dpg.add_input_text(tag="output", default_value="set_values 1 4 1 4 5 6 7 8 9 10", hint="Write CMD", width=230,  callback=_log)
         dpg.add_button(label="Get IP_Loc", callback=get_IP_Loc)
         dpg.add_button(label="Update INFO", callback=update_IFO)
         dpg.add_button(label="Start thread", callback=update_series_start)
@@ -803,7 +806,41 @@ with dpg.window(label="Plot In", tag="win_In" , width=800, height=1200, pos=[750
                 #dpg.add_line_series(sindatax, sindatay, label="0.5 + 0.5 * sin(x)", parent="y_axis"+str(ch), tag="series_tag_ch"+str(ch))
                 dpg.add_line_series(sindatax, sindatay, parent="y_axis"+str(ch)+tip, tag="series_tag_ch"+str(ch)+tip)
 
-
+with dpg.window(label="ModBus:" , width=600, height=200, pos=[0, 100]):
+    #with dpg.group(horizontal=True):
+    # slave_1.add_block('1', cst.COILS, 0, 10)
+    # slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 10)
+    # slave_1.add_block('3', cst.HOLDING_REGISTERS, 0, 10)
+    # slave_1.add_block('4', cst.ANALOG_INPUTS, 0, 10)
+    with dpg.group(horizontal=True):
+        with dpg.group(horizontal=True):
+          dpg.add_text("Address:")
+          dpg.add_input_text( tag="Address", default_value="0001", hint="Write CMD", width=50, callback=_log)
+          dpg.add_button(label="Set", callback=get_IP_Loc)
+        with dpg.group(horizontal=True):
+              dpg.add_text("ID Device:")
+              dpg.add_input_text(tag="ID_Device", default_value="01", hint="Write CMD", width=50, callback=_log)
+              dpg.add_button(label="Set", callback=get_IP_Loc)
+    with dpg.group(horizontal=True):
+      dpg.add_text("1:COILS")
+      dpg.add_input_text( tag="input1", default_value=CmdDateForModBus, hint="Write CMD", width=230, callback=_log)
+      dpg.add_button(label="Set", callback=get_IP_Loc)
+      dpg.add_button(label="Get", callback=get_IP_Loc)
+    with dpg.group(horizontal=True):
+      dpg.add_text("2:DISCRETE_INPUTS")
+      dpg.add_input_text( tag="input2", default_value=CmdDateForModBus, hint="Write CMD", width=230, callback=_log)
+      dpg.add_button(label="Set", callback=get_IP_Loc)
+      dpg.add_button(label="Get", callback=get_IP_Loc)
+    with dpg.group(horizontal=True):
+      dpg.add_text("3:HOLDING_REGISTERS")
+      dpg.add_input_text( tag="input3", default_value=CmdDateForModBus, hint="Write CMD", width=230, callback=_log)
+      dpg.add_button(label="Set", callback=get_IP_Loc)
+      dpg.add_button(label="Get", callback=get_IP_Loc)
+    with dpg.group(horizontal=True):
+      dpg.add_text("4:ANALOG_INPUTS")
+      dpg.add_input_text(tag="input4", default_value=CmdDateForModBus, hint="Write CMD", width=230, callback=_log)
+      dpg.add_button(label="Set", callback=get_IP_Loc)
+      dpg.add_button(label="Get", callback=get_IP_Loc)
 
 
 dpg.create_viewport(title='ZruMod '+' : Rev '+revForPO, width=1600, height=600)
@@ -815,6 +852,7 @@ tServer.start()
 tBot.start();
 dpg.start_dearpygui()
 dpg.destroy_context()
+
 
 
 

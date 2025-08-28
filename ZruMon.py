@@ -243,9 +243,6 @@ def threaded_function_sin_mon(arg): #В потоке читаем СОКЕТ
             time.sleep(0.002);  # Ждем 0,02сек
             update_series();
 
-tBot = threading.Thread(target=threaded_start_bot, args=(15,))  # Настраиваем поток
-tBot.daemon = True
-
 tCOM = threading.Thread(target=threaded_function_sin_mon, args=(15,))  # Настраиваем поток
 tCOM.daemon = True
 
@@ -719,6 +716,6 @@ dpg.show_viewport()
 tCOM.start()  # Запускаем
 t.start()  #Запускаем поток
 tServer.start()
-tBot.start();
 dpg.start_dearpygui()
 dpg.destroy_context()
+

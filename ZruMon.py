@@ -467,9 +467,15 @@ def slider_callback_Set_Ofset(sender, app_data, user_data):
     #print(f"Значение ползунка: {app_data}")
     Ofset = app_data
 
+#with dpg.font_registry():
+#    with dpg.font(f'C:\\\\Windows\\\\Fonts\\\\arialbi.ttf', 9, default_font=True, id="Default font"):
+#        dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
+
 with dpg.font_registry():
-    with dpg.font(f'C:\\\\Windows\\\\Fonts\\\\arialbi.ttf', 9, default_font=True, id="Default font"):
+    with dpg.font(f'C:\\\\Windows\\\\Fonts\\\\arialbi.ttf', 20, default_font=True, tag="Default font") as f:
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
+
+dpg.bind_font("Default font")
 
 with dpg.window(label="Data log.", width=700, height=500, pos=[0, 300]):
     input_text_tag = dpg.add_input_text(
@@ -738,6 +744,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

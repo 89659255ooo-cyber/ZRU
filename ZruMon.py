@@ -262,7 +262,13 @@ def modBServ (arg):
                     cmdForModBus = ""
                 if (True):
                     #вернуть значения n элементов по указанному адресу указанного блока
+                    values = server.get_slave(1).get_values('1', 0, 25)
+                    input_text_tag_str_buf = "\n" + "get_values "+str(values) + input_text_tag_str_buf
+                    values = server.get_slave(1).get_values('2', 0, 25)
+                    input_text_tag_str_buf = "\n" + "get_values "+str(values) + input_text_tag_str_buf
                     values = server.get_slave(1).get_values('3', 0, 25)
+                    input_text_tag_str_buf = "\n" + "get_values "+str(values) + input_text_tag_str_buf
+                    values = server.get_slave(1).get_values('4', 0, 25)
                     input_text_tag_str_buf = "\n"+"\n" + "get_values "+str(values) + input_text_tag_str_buf
                     dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
     finally:
@@ -749,6 +755,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

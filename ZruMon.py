@@ -264,7 +264,7 @@ def modBServ (arg):
                     #вернуть значения n элементов по указанному адресу указанного блока
                     print(f"get_values")
                     slave_id = int(1)
-                    name = '1'
+                    name = '3'
                     address = int(0)
                     length = int(25)
                     slave = server.get_slave(slave_id)
@@ -755,6 +755,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

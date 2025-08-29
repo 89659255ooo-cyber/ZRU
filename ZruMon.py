@@ -262,14 +262,8 @@ def modBServ (arg):
                     cmdForModBus = ""
                 if (True):
                     #вернуть значения n элементов по указанному адресу указанного блока
-                    print(f"get_values")
-                    slave_id = int(1)
-                    name = '3'
-                    address = int(0)
-                    length = int(25)
-                    slave = server.get_slave(slave_id)
-                    values = slave.get_values(name, address, length)
-                    input_text_tag_str_buf = "\n" + str(values) + input_text_tag_str_buf
+                    values = server.get_slave(1).get_values('3', 0, 25)
+                    input_text_tag_str_buf = "\n"+"\n" + "get_values "+str(values) + input_text_tag_str_buf
                     dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
     finally:
         print(f"Ошибка команды для сервер")
@@ -755,6 +749,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

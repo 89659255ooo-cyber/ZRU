@@ -12,7 +12,7 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "2";
+revForPO = "7";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
@@ -179,7 +179,7 @@ def modBServ (arg):
         for g in range(4):
             print(" ")
             print(f"cmd modbus_tcp "+str(g))
-            cmd = 'set_values 1 '+str(g+1)+' 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 '+str(g)
+            cmd = 'set_values 1 '+str(g+1)+' 0 1 '+revForPO+' 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 '+str(g)
             args = cmd.split(' ')
             slave_id = int(args[1])
             name = args[2]
@@ -199,7 +199,7 @@ def modBServ (arg):
         while True:
             time.sleep(0.1)
             countSeck=countSeck+1;
-            cmdForModBus = 'set_values 1 ' + str( g + 1) + ' 0 '+str(countSeck)+' 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ' + str(g)
+            cmdForModBus = 'set_values 1 ' + str( g + 1) + ' 0 '+str(countSeck)+' '+revForPO+' 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ' + str(g)
             if (cmdForModBus != ""):
                 #cmd = "set_values 1 0 1 4 5 6 7 8 9 10"
                 #args = cmd.split(' ')
@@ -738,6 +738,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

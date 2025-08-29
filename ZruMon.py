@@ -729,14 +729,15 @@ with dpg.window(label="ModBus:" , width=600, height=200, pos=[0, 100]):
       dpg.add_button(label="Get", callback=get_IP_Loc)
 
 
-dpg.create_viewport(title='ZruMod '+' : Rev '+revForPO, width=1600, height=600)
+dpg.create_viewport(title='ZruMod '+' : Rev '+revForPO, width=1900, height=1200,x_pos = 0, y_pos = 0)
 dpg.setup_dearpygui()
 dpg.show_viewport()
-tCOM.start()  # Запускаем
-t.start()  #Запускаем поток
+#tCOM.start()  # Запускаем
+#t.start()  #Запускаем поток
 tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 

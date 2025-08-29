@@ -186,8 +186,8 @@ def modBServ (arg):
             address = int(args[3])
             values = []
             #print(cmd)
-            input_text_tag_str_buf = "\n" + cmd + input_text_tag_str_buf
-            dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
+            #input_text_tag_str_buf = "\n" + cmd + input_text_tag_str_buf
+            #dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
             for val in args[4:]:
                 if (val != " "):
                     if (val != ""):
@@ -260,6 +260,17 @@ def modBServ (arg):
                 else:
                     sys.stdout.write("unknown command %s\\r\\n" % args[0])
                     cmdForModBus = ""
+                if (True):
+                    #вернуть значения n элементов по указанному адресу указанного блока
+                    print(f"get_values")
+                    slave_id = int(1)
+                    name = '1'
+                    address = int(0)
+                    length = int(25)
+                    slave = server.get_slave(slave_id)
+                    values = slave.get_values(name, address, length)
+                    input_text_tag_str_buf = "\n" + str(values) + input_text_tag_str_buf
+                    dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
     finally:
         print(f"Ошибка команды для сервер")
         #server.stop()
@@ -744,6 +755,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

@@ -266,11 +266,7 @@ def modBServ (arg):
                     values2 = server.get_slave(1).get_values('2', 0, 25)
                     values3 = server.get_slave(1).get_values('3', 0, 25)
                     values4 = server.get_slave(1).get_values('4', 0, 25)
-                        input_text_tag_str_buf = ("\n"+"\n" + 
-                        "get_values "+str(values1) +"\n" + 
-                        "get_values "+str(values2) +"\n" + 
-                        "get_values "+str(values3) + 
-                        input_text_tag_str_buf);
+                    input_text_tag_str_buf = "\n"+"\n" + "get_values "+str(values1) +"\n" + "get_values "+str(values2)+"\n" + "get_values "+str(values3)+input_text_tag_str_buf
                     dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
     finally:
         print(f"Ошибка команды для сервер")
@@ -756,6 +752,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

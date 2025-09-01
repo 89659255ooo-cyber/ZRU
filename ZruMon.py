@@ -179,7 +179,7 @@ def modBServ (arg):
         out1 = server.get_slave(1).set_values("1", 0, (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         out2 = server.get_slave(1).set_values("2", 0, (1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
         out3 = server.get_slave(1).set_values("3", 0, (3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3))
-        out4 = server.get_slave(1).set_values("3", 501, (4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4))
+        out4 = server.get_slave(1).set_values("3", 501, (4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,))
         countSeck = 0
         while True:
             time.sleep(0.1)
@@ -741,6 +741,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

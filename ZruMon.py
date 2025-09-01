@@ -179,7 +179,7 @@ def modBServ (arg):
         out1 = server.get_slave(1).set_values("1", 0, (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         out2 = server.get_slave(1).set_values("2", 0, (1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
         out3 = server.get_slave(1).set_values("3", 0, (3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3))
-        out4 = server.get_slave(1).set_values("3", 0, (4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4))
+        out4 = server.get_slave(1).set_values("3", 501, (4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4))
         countSeck = 0
         while True:
             time.sleep(0.1)
@@ -252,7 +252,7 @@ def modBServ (arg):
                     values1 = server.get_slave(1).get_values('1', 0, 25)
                     values2 = server.get_slave(1).get_values('2', 0, 25)
                     values3 = server.get_slave(1).get_values('3', 0, 25)
-                    values4 = server.get_slave(1).get_values('4', 0, 25)
+                    values4 = server.get_slave(1).get_values('4', 501, 25)
                     input_text_tag_str_buf = "\n" + "\n" + tmr+" get_values_1 " + str(values1) + "\n" + tmr+" get_values_2 " + str(
                         values2) + "\n" + tmr+" get_values_3 " + str(values3) + "\n" + tmr+" get_values_4 " + str(
                         values4) + input_text_tag_str_buf
@@ -741,6 +741,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

@@ -12,7 +12,7 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "14";
+revForPO = "15";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
@@ -179,12 +179,12 @@ def modBServ (arg):
         out1 = server.get_slave(1).set_values("1", 0, (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         out2 = server.get_slave(1).set_values("2", 0, (1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
         out3 = server.get_slave(1).set_values("3", 0, (3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3))
-        out4 = server.get_slave(1).set_values("3", 501, (4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,))
+        out4 = server.get_slave(1).set_values("4", 501, (4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4))
         countSeck = 0
         while True:
             time.sleep(0.1)
             countSeck=countSeck+1;
-            cmdForModBus = 'set_values 1 ' + str( g + 1) + ' 0 '+str(countSeck)+' '+revForPO+' 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ' + str(g)
+            cmdForModBus = 'set_values 1 3 0 '+str(countSeck)+' '+revForPO+' 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25'
             cmdForModBus = "" 
             if (cmdForModBus != ""):
                 #cmd = "set_values 1 0 1 4 5 6 7 8 9 10"
@@ -260,6 +260,7 @@ def modBServ (arg):
     finally:
         print(f"Ошибка команды для сервер")
         #server.stop()
+
 
 tServer = threading.Thread(target=modBServ, args=(15,))  # Настраиваем поток
 tServer.daemon = True
@@ -741,6 +742,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

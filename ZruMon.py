@@ -12,7 +12,7 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "10";
+revForPO = "11";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
@@ -263,12 +263,13 @@ def modBServ (arg):
                     cmdForModBus = ""
             if (True):
                     #вернуть значения n элементов по указанному адресу указанного блока
+                    tmr = time.strftime('%H:%M:%S') #Изменение надписи метки
                     values1 = server.get_slave(1).get_values('1', 0, 25)
                     values2 = server.get_slave(1).get_values('2', 0, 25)
                     values3 = server.get_slave(1).get_values('3', 0, 25)
                     values4 = server.get_slave(1).get_values('4', 0, 25)
-                    input_text_tag_str_buf = "\n" + "\n" + "get_values_1 " + str(values1) + "\n" + "get_values_2 " + str(
-                        values2) + "\n" + "get_values_3 " + str(values3) + "\n" + "get_values_4 " + str(
+                    input_text_tag_str_buf = "\n" + "\n" + tmr+" get_values_1 " + str(values1) + "\n" + tmr+" get_values_2 " + str(
+                        values2) + "\n" + tmr+" get_values_3 " + str(values3) + "\n" + tmr+" get_values_4 " + str(
                         values4) + input_text_tag_str_buf
                     dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
     finally:
@@ -755,6 +756,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

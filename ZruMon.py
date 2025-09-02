@@ -12,7 +12,7 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "18";
+revForPO = "19";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
@@ -172,9 +172,9 @@ def modBServ (arg):
         server.start()
         slave_1 = server.add_slave(1)
         slave_1.add_block('1', cst.COILS, 0, 32)
-        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 32)
-        slave_1.add_block('3', cst.HOLDING_REGISTERS, wrRegAddr, 32)
-        slave_1.add_block('4', cst.ANALOG_INPUTS, wrRegAddr, 32)
+        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 0x60)
+        slave_1.add_block('3', cst.HOLDING_REGISTERS, wrRegAddr, 0x60)
+        slave_1.add_block('4', cst.ANALOG_INPUTS, wrRegAddr, 0x60)
         print(f"Stert modbus_tcp.TcpServer")
         out1 = server.get_slave(1).set_values("1", 0, (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         out2 = server.get_slave(1).set_values("2", 0, (1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
@@ -742,6 +742,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

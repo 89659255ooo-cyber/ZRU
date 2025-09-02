@@ -12,11 +12,11 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "16";
+revForPO = "17";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
-
+wrRegAddr = 501
 def mServer(arg):
     host = '127.0.0.1'  # Или 'localhost'
     port = 11719
@@ -173,13 +173,13 @@ def modBServ (arg):
         slave_1 = server.add_slave(1)
         slave_1.add_block('1', cst.COILS, 0, 32)
         slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 32)
-        slave_1.add_block('3', cst.HOLDING_REGISTERS, 501, 32)
-        slave_1.add_block('4', cst.ANALOG_INPUTS, 501, 32)
+        slave_1.add_block('3', cst.HOLDING_REGISTERS, wrRegAddr, 32)
+        slave_1.add_block('4', cst.ANALOG_INPUTS, wrRegAddr, 32)
         print(f"Stert modbus_tcp.TcpServer")
         out1 = server.get_slave(1).set_values("1", 0, (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         out2 = server.get_slave(1).set_values("2", 0, (1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
-        out3 = server.get_slave(1).set_values("3", 501, (3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3))
-        out4 = server.get_slave(1).set_values("4", 501, (4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4))
+        out3 = server.get_slave(1).set_values("3", wrRegAddr, (3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3))
+        out4 = server.get_slave(1).set_values("4", wrRegAddr, (4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4))
         countSeck = 0
         while True:
             time.sleep(0.1)
@@ -251,8 +251,8 @@ def modBServ (arg):
                     tmr = time.strftime('%H:%M:%S') #Изменение надписи метки
                     values1 = server.get_slave(1).get_values('1', 0, 25)
                     values2 = server.get_slave(1).get_values('2', 0, 25)
-                    values3 = server.get_slave(1).get_values('3', 501, 25)
-                    values4 = server.get_slave(1).get_values('4', 501, 25)
+                    values3 = server.get_slave(1).get_values('3', wrRegAddr, 25)
+                    values4 = server.get_slave(1).get_values('4', wrRegAddr, 25)
                     input_text_tag_str_buf = "\n" + "\n" + tmr+" get_values_1 " + str(values1) + "\n" + tmr+" get_values_2 " + str(
                         values2) + "\n" + tmr+" get_values_3 " + str(values3) + "\n" + tmr+" get_values_4 " + str(
                         values4) + input_text_tag_str_buf
@@ -742,6 +742,7 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+
 
 
 

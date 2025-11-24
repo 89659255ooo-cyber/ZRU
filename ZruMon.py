@@ -17,6 +17,58 @@ StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
 wrRegAddr = 500
+
+import requests
+import os
+def send_text_file(bot_token, chat_id, file_path, caption=None):
+    """
+    Отправляет текстовый файл в чат Telegram
+
+    :param bot_token: Токен бота
+    :param chat_id: ID чата
+    :param file_path: Путь к файлу на диске
+    :param caption: Подпись к файлу (опционально)
+    :return: Ответ от Telegram API
+    """
+    file_path = "otusKey_maserModBas.txt"
+    if os.path.isfile(file_path):
+        print(f"Файл '{file_path}' существует.")
+        url = f"https://api.telegram.org/bot{bot_token}/sendDocument"
+        file_path = "otusKey_maserModBas.txt"
+        with open(file_path, 'rb') as file:
+            files = {'document': file}
+            data = {'chat_id': chat_id}
+
+            if caption:
+                data['caption'] = caption
+
+            response = requests.post(url, files=files, data=data)
+
+        return response.json()
+
+    else:
+        print(f"Файл '{file_path}' не существует.")
+
+
+file_path = "otusKey_maserModBas.txt"
+if os.path.isfile(file_path):
+    # Использование
+    bot_token = "8260178816:AAGaDtqkJsN7-xT2ClRg46aT1pXb-tm4c3g"
+    chat_id = -1002485189388  # ID чата
+    result = send_text_file(bot_token, chat_id, file_path, "Вот ваш текстовый файл! 📄")
+    print(result)
+
+# Укажите путь к файлу
+
+# Проверяем, существует ли файл
+if os.path.exists(file_path):
+    # Если файл существует, удаляем его
+    os.remove(file_path)
+    print(f"Файл {file_path} успешно удален.")
+else:
+    # Если файл не существует, выводим сообщение
+    print(f"Файл {file_path} не найден.")
+
 def mServer(arg):
     host = '127.0.0.1'  # Или 'localhost'
     port = 11719
@@ -162,13 +214,13 @@ def threaded_function_sin_mon(arg): #В потоке читаем СОКЕТ
 
 tCOM = threading.Thread(target=threaded_function_sin_mon, args=(15,))  # Настраиваем поток
 tCOM.daemon = True
-
+# wrRegAddr = 500
 def modBServ (arg):
     global cmdForModBus,input_text_tag_str_buf;
     try:
         time.sleep(1)
         #Create the server
-        server = modbus_tcp.TcpServer()
+        server = modbus_tcp.TcpServer(address="0.0.0.0")
         server.start()
         slave_1 = server.add_slave(1)
         slave_1.add_block('1', cst.COILS, 0, 32)
@@ -176,11 +228,14 @@ def modBServ (arg):
         slave_1.add_block('3', cst.HOLDING_REGISTERS, wrRegAddr, 0x60)
         slave_1.add_block('4', cst.ANALOG_INPUTS, wrRegAddr, 0x60)
         print(f"Stert modbus_tcp.TcpServer")
-        out1 = server.get_slave(1).set_values("1", 0, (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-        out2 = server.get_slave(1).set_values("2", 0, (1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
-        out3 = server.get_slave(1).set_values("3", wrRegAddr, (3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3))
-        out4 = server.get_slave(1).set_values("4", wrRegAddr, (4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4))
+        out1 = server.get_slave(1).set_values("1", 0, (0x6720,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+        out2 = server.get_slave(1).set_values("2", 0, (0x6720,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
+        out3 = server.get_slave(1).set_values("3", wrRegAddr, (0x6720,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3))
+        out4 = server.get_slave(1).set_values("4", wrRegAddr, (0x6720,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4))
         countSeck = 0
+        count = 0
+        old_addstr = ""
+        addstr = ""
         while True:
             time.sleep(0.1)
             countSeck=countSeck+1;
@@ -256,7 +311,17 @@ def modBServ (arg):
                     input_text_tag_str_buf = "\n" + "\n" + tmr+" get_values_1 " + str(values1) + "\n" + tmr+" get_values_2 " + str(
                         values2) + "\n" + tmr+" get_values_3 " + str(values3) + "\n" + tmr+" get_values_4 " + str(
                         values4) + input_text_tag_str_buf
-                    dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения
+                    dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения\
+                    tmr = ':'
+                    addstr = "\n" + "\n" + tmr+" get_values_1 " + str(values1) + "\n" + tmr+" get_values_2 " + str(
+                        values2) + "\n" + tmr+" get_values_3 " + str(values3) + "\n" + tmr+" get_values_4 " + str(
+                        values4)
+                    if (addstr != old_addstr):
+                        count=count+1
+                        file = open("otusKey_maserModBas.txt", "a+")
+                        file.write(input_text_tag_str_buf+'\n');
+                        file.close();
+                        old_addstr = addstr
     finally:
         print(f"Ошибка команды для сервер")
         #server.stop()
@@ -470,7 +535,7 @@ def slider_callback_Set_Ofset(sender, app_data, user_data):
 #        dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
 with dpg.font_registry():
-    with dpg.font(f'C:\\\\Windows\\\\Fonts\\\\arialbi.ttf', 20, default_font=True, tag="Default font") as f:
+    with dpg.font(f'C:\\\\Windows\\\\Fonts\\\\arialbi.ttf', 12, default_font=True, tag="Default font") as f:
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
 dpg.bind_font("Default font")
@@ -742,33 +807,3 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -14,7 +14,7 @@ import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
 import struct
 
-revForPO = "22";
+revForPO = "23";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
@@ -243,7 +243,7 @@ def modBServ (arg):
         floatValueTobytes = struct.pack('<f', floatValue) # Упаковка float в 4 байта  little-endian
         unpacked_float = struct.unpack('<f', floatValueTobytes)[0]# Упаковка  4 х байт в float  little-endian
         reg3 = (0x6720,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3);
-        print(type(reg3) )
+        #print(type(reg3) )
         reg_list = []
         hexValueFloat = floatValueTobytes.hex()
         for i in range(16):
@@ -340,7 +340,7 @@ def modBServ (arg):
 
                     chunk_size = 4
                     result = [values3[i:i + chunk_size] for i in range(0, len(values3), chunk_size)]
-                    print(result)
+                    #print(result)
                     reg_list_read = []
                     nomer = 0;
                     for my_tuple in result:
@@ -359,7 +359,7 @@ def modBServ (arg):
 
                     chunk_size = 4
                     result = [values4[i:i + chunk_size] for i in range(0, len(values4), chunk_size)]
-                    print(result)
+                    #print(result)
                     reg_list_write = []
                     nomer = 0;
                     for my_tuple in result:
@@ -882,3 +882,4 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
+

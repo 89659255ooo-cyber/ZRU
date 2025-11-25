@@ -223,6 +223,7 @@ tCOM.daemon = True
 def modBServ (arg):
     global cmdForModBus,input_text_tag_str_buf;
     try:
+        countSeck = 1
         time.sleep(1)
         #Create the server
         server = modbus_tcp.TcpServer(address="0.0.0.0")
@@ -236,7 +237,7 @@ def modBServ (arg):
 
         #floatValueTobytes = struct.pack('d', floatValue) # Упаковка float в 8 байт
         #unpacked_float = struct.unpack('d', floatValueTobytes)[0]# Упаковка 8 байт d float
-        number = 12345
+        number = 12
         int_byte_array = number.to_bytes(4, byteorder='little')
 
         floatValue = 19.307232;  # 0x419a7536 big-endian, 0x36759a41 little-endian
@@ -246,8 +247,20 @@ def modBServ (arg):
         #print(type(reg3) )
         reg_list = []
         hexValueFloat = floatValueTobytes.hex()
-        for i in range(16):
-            b = floatValueTobytes[0]
+        #3 значения
+        #reg_list.append(number.to_bytes(4, byteorder='little')[0]) #counter
+        #reg_list.append((int(countSeck)).to_bytes(4, byteorder='little')[0])  # counter
+        #reg_list.append((int(revForPO)).to_bytes(4, byteorder='little')[0])   # version
+        addVAlue=[number,countSeck,int(revForPO)]
+        for i in range(3):
+            int_byte_array=addVAlue[i].to_bytes(4, byteorder='little')
+            reg_list.append(int_byte_array[0])
+            reg_list.append(int_byte_array[1])
+            reg_list.append(int_byte_array[2])
+            reg_list.append(int_byte_array[3])
+        number = 12345
+        int_byte_array = number.to_bytes(4, byteorder='little')
+        for i in range(13):
             reg_list.append(int_byte_array[0])
             reg_list.append(int_byte_array[1])
             reg_list.append(int_byte_array[2])
@@ -262,7 +275,7 @@ def modBServ (arg):
         out2 = server.get_slave(1).set_values("2", 0, empty_tuple)
         out3 = server.get_slave(1).set_values("3", wrRegAddr, empty_tuple)
         out4 = server.get_slave(1).set_values("4", wrRegAddr, empty_tuple)
-        countSeck = 0
+
         count = 0
         old_addstr = ""
         addstr = ""
@@ -332,10 +345,21 @@ def modBServ (arg):
                     sys.stdout.write("unknown command %s\\r\\n" % args[0])
                     cmdForModBus = ""
             if (True):
+                    reg_list = []
+                    int_byte_array = countSeck.to_bytes(4, byteorder='little')
+                    reg_list.append(int_byte_array[0])
+                    reg_list.append(int_byte_array[1])
+                    reg_list.append(int_byte_array[2])
+                    reg_list.append(int_byte_array[3])
+                    server.get_slave(1).set_values("1", 0, tuple(reg_list))
+                    server.get_slave(1).set_values("2", 0, tuple(reg_list))
+                    server.get_slave(1).set_values("3", wrRegAddr, tuple(reg_list))
+                    server.get_slave(1).set_values("4", wrRegAddr, tuple(reg_list))
                     #вернуть значения n элементов по указанному адресу указанного блока
                     tmr = time.strftime('%H:%M:%S') #Изменение надписи метки
                     values1 = server.get_slave(1).get_values('1', 0, 25)
                     values2 = server.get_slave(1).get_values('2', 0, 25)
+                    #### чтение значений регистров
                     values3 = server.get_slave(1).get_values('3', wrRegAddr, 0x60*4)
 
                     chunk_size = 4
@@ -882,4 +906,3 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
-

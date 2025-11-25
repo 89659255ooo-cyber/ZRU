@@ -12,7 +12,9 @@ import sys
 import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
-revForPO = "21";
+import struct
+
+revForPO = "22";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
@@ -41,9 +43,10 @@ def send_text_file(bot_token, chat_id, file_path, caption=None):
 
             if caption:
                 data['caption'] = caption
-
-            response = requests.post(url, files=files, data=data)
-
+            try:
+              response = requests.post(url, files=files, data=data)
+            except:
+                return "Ошибка отправки файла otusKey_maserModBas.txt"
         return response.json()
 
     else:
@@ -51,23 +54,25 @@ def send_text_file(bot_token, chat_id, file_path, caption=None):
 
 
 file_path = "otusKey_maserModBas.txt"
+resulSendFile = ""
 if os.path.isfile(file_path):
     # Использование
     bot_token = "8260178816:AAGaDtqkJsN7-xT2ClRg46aT1pXb-tm4c3g"
     chat_id = -1002485189388  # ID чата
-    result = send_text_file(bot_token, chat_id, file_path, "Вот ваш текстовый файл! 📄")
-    print(result)
+    resulSendFile = send_text_file(bot_token, chat_id, file_path, "Вот ваш текстовый файл! 📄")
+    print(resulSendFile)
 
 # Укажите путь к файлу
 
 # Проверяем, существует ли файл
-if os.path.exists(file_path):
-    # Если файл существует, удаляем его
-    os.remove(file_path)
-    print(f"Файл {file_path} успешно удален.")
-else:
-    # Если файл не существует, выводим сообщение
-    print(f"Файл {file_path} не найден.")
+if (resulSendFile != "Ошибка отправки файла otusKey_maserModBas.txt"):
+        if os.path.exists(file_path):
+            # Если файл существует, удаляем его
+            os.remove(file_path)
+            print(f"Файл {file_path} успешно удален.")
+        else:
+            # Если файл не существует, выводим сообщение
+            print(f"Файл {file_path} не найден.")
 
 def mServer(arg):
     host = '127.0.0.1'  # Или 'localhost'
@@ -224,14 +229,39 @@ def modBServ (arg):
         server.start()
         slave_1 = server.add_slave(1)
         slave_1.add_block('1', cst.COILS, 0, 32)
-        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 0x60)
-        slave_1.add_block('3', cst.HOLDING_REGISTERS, wrRegAddr, 0x60)
-        slave_1.add_block('4', cst.ANALOG_INPUTS, wrRegAddr, 0x60)
+        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 0x60*4) #96
+        slave_1.add_block('3', cst.HOLDING_REGISTERS, wrRegAddr, 0x60*4)
+        slave_1.add_block('4', cst.ANALOG_INPUTS, wrRegAddr, 0x60*4)
         print(f"Stert modbus_tcp.TcpServer")
+
+        #floatValueTobytes = struct.pack('d', floatValue) # Упаковка float в 8 байт
+        #unpacked_float = struct.unpack('d', floatValueTobytes)[0]# Упаковка 8 байт d float
+        number = 12345
+        int_byte_array = number.to_bytes(4, byteorder='little')
+
+        floatValue = 19.307232;  # 0x419a7536 big-endian, 0x36759a41 little-endian
+        floatValueTobytes = struct.pack('<f', floatValue) # Упаковка float в 4 байта  little-endian
+        unpacked_float = struct.unpack('<f', floatValueTobytes)[0]# Упаковка  4 х байт в float  little-endian
+        reg3 = (0x6720,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3);
+        print(type(reg3) )
+        reg_list = []
+        hexValueFloat = floatValueTobytes.hex()
+        for i in range(16):
+            b = floatValueTobytes[0]
+            reg_list.append(int_byte_array[0])
+            reg_list.append(int_byte_array[1])
+            reg_list.append(int_byte_array[2])
+            reg_list.append(int_byte_array[3])
+        for i in range(80):
+            reg_list.append(floatValueTobytes[0])
+            reg_list.append(floatValueTobytes[1])
+            reg_list.append(floatValueTobytes[2])
+            reg_list.append(floatValueTobytes[3])
+        empty_tuple = tuple(reg_list)
         out1 = server.get_slave(1).set_values("1", 0, (0x6720,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-        out2 = server.get_slave(1).set_values("2", 0, (0x6720,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
-        out3 = server.get_slave(1).set_values("3", wrRegAddr, (0x6720,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3))
-        out4 = server.get_slave(1).set_values("4", wrRegAddr, (0x6720,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4))
+        out2 = server.get_slave(1).set_values("2", 0, empty_tuple)
+        out3 = server.get_slave(1).set_values("3", wrRegAddr, empty_tuple)
+        out4 = server.get_slave(1).set_values("4", wrRegAddr, empty_tuple)
         countSeck = 0
         count = 0
         old_addstr = ""
@@ -306,16 +336,61 @@ def modBServ (arg):
                     tmr = time.strftime('%H:%M:%S') #Изменение надписи метки
                     values1 = server.get_slave(1).get_values('1', 0, 25)
                     values2 = server.get_slave(1).get_values('2', 0, 25)
-                    values3 = server.get_slave(1).get_values('3', wrRegAddr, 25)
-                    values4 = server.get_slave(1).get_values('4', wrRegAddr, 25)
+                    values3 = server.get_slave(1).get_values('3', wrRegAddr, 0x60*4)
+
+                    chunk_size = 4
+                    result = [values3[i:i + chunk_size] for i in range(0, len(values3), chunk_size)]
+                    print(result)
+                    reg_list_read = []
+                    nomer = 0;
+                    for my_tuple in result:
+                        nomer=nomer+4
+                        if (nomer < (17*4)):
+                            byte_data = bytes(my_tuple)
+                            int_value = int.from_bytes(byte_data, byteorder='little', signed=False) #little #big
+                            reg_list_read.append(int_value)
+                        else:
+                            byte_data = bytes(my_tuple)
+                            float_value = struct.unpack('f', byte_data)[0]
+                            reg_list_read.append(float_value)
+
+                    ############################################################
+                    values4 = server.get_slave(1).get_values('4', wrRegAddr, 0x60*4)
+
+                    chunk_size = 4
+                    result = [values4[i:i + chunk_size] for i in range(0, len(values4), chunk_size)]
+                    print(result)
+                    reg_list_write = []
+                    nomer = 0;
+                    for my_tuple in result:
+                        nomer=nomer+4
+                        if (nomer < (17*4)):
+                            byte_data = bytes(my_tuple)
+                            int_value = int.from_bytes(byte_data, byteorder='little', signed=False) #little #big
+                            reg_list_write.append(int_value)
+                        else:
+                            byte_data = bytes(my_tuple)
+                            float_value = struct.unpack('f', byte_data)[0]
+                            reg_list_write.append(float_value)
+
+                    ############################################################
+                    string_values3 = "";
+                    for reg in reg_list_read:
+                        string_values3 = string_values3+" "+ str(reg);
+
+                    string_values4 = "";
+                    for reg in reg_list_read:
+                        string_values4 = string_values4+" "+ str(reg);
+
                     input_text_tag_str_buf = "\n" + "\n" + tmr+" get_values_1 " + str(values1) + "\n" + tmr+" get_values_2 " + str(
-                        values2) + "\n" + tmr+" get_values_3 " + str(values3) + "\n" + tmr+" get_values_4 " + str(
-                        values4) + input_text_tag_str_buf
+                        values2) + "\n" + tmr+" get_values_3 " + string_values3 + "\n" + tmr+" get_values_4 " + string_values4 + input_text_tag_str_buf
                     dpg.set_value(input_text_tag, input_text_tag_str_buf)  # Изменение значения\
+
                     tmr = ':'
                     addstr = "\n" + "\n" + tmr+" get_values_1 " + str(values1) + "\n" + tmr+" get_values_2 " + str(
                         values2) + "\n" + tmr+" get_values_3 " + str(values3) + "\n" + tmr+" get_values_4 " + str(
                         values4)
+
                     if (addstr != old_addstr):
                         count=count+1
                         file = open("otusKey_maserModBas.txt", "a+")
@@ -540,11 +615,11 @@ with dpg.font_registry():
 
 dpg.bind_font("Default font")
 
-with dpg.window(label="Data log.", width=700, height=500, pos=[0, 300]):
+with dpg.window(label="Data log.", width=1000, height=500, pos=[0, 300]):
     input_text_tag = dpg.add_input_text(
         hint="Some description",
         multiline=True,
-        width=700, height=500,
+        width=1000, height=500,
     )
 def get_IP_Loc ():
     import socket
@@ -807,4 +882,3 @@ tServer.start()
 dpg.start_dearpygui()
 
 dpg.destroy_context()
-

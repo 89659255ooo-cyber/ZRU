@@ -14,7 +14,11 @@ import modbus_tk.defines as cst
 #from modbus_tk import modbus_tcp
 import struct
 
-
+revForPO = "26";
+StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
+CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
+cmdForModBus = StertCmdForModBus
+wrRegAddr = 0
 ###################################################################
 
 # !/usr/bin/env python
@@ -384,7 +388,8 @@ class TcpServer(Server):
                             file = open("otusKey_maserModBas.txt", "a+")
                             file.write(input_soket+'\n');
                             file.close();
-                            print(AreeyBinToStrHex(request) + " - " + AreeyBinToStrHex(response))
+                            print(input_soket)
+                            pass;
                         except Exception as msg:
                             LOGGER.error("Error while handling a request, Exception occurred: %s", msg)
 
@@ -411,11 +416,7 @@ class TcpServer(Server):
 ##################################################################
 
 
-revForPO = "25";
-StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
-CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
-cmdForModBus = StertCmdForModBus
-wrRegAddr = 0
+
 
 import requests
 import os
@@ -646,14 +647,14 @@ def modBServ (arg):
         server.start()
         slave_1 = server.add_slave(1)
         slave_1.add_block('1', cst.COILS, 0, 32)
-        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 0x60*4) #96
-        slave_1.add_block('3', cst.HOLDING_REGISTERS, wrRegAddr, 0x60*4)
-        slave_1.add_block('4', cst.ANALOG_INPUTS, wrRegAddr, 0x60*4)
+        slave_1.add_block('2', cst.DISCRETE_INPUTS, 0, 0x60*2) #96
+        slave_1.add_block('3', cst.HOLDING_REGISTERS, wrRegAddr, 0x60*2)
+        slave_1.add_block('4', cst.ANALOG_INPUTS, wrRegAddr, 0x60*2)
         print(f"Stert modbus_tcp.TcpServer")
 
         #floatValueTobytes = struct.pack('d', floatValue) # Упаковка float в 8 байт
         #unpacked_float = struct.unpack('d', floatValueTobytes)[0]# Упаковка 8 байт d float
-        number = 12
+        number = 123457869
         int_byte_array = number.to_bytes(4, byteorder='little')
 
         floatValue = 19.307232;  # 0x419a7536 big-endian, 0x36759a41 little-endian
@@ -670,22 +671,31 @@ def modBServ (arg):
         addVAlue=[number,countSeck,int(revForPO)]
         for i in range(3):
             int_byte_array=addVAlue[i].to_bytes(4, byteorder='little')
-            reg_list.append(int_byte_array[0])
-            reg_list.append(int_byte_array[1])
-            reg_list.append(int_byte_array[2])
-            reg_list.append(int_byte_array[3])
+            firstReg = int_byte_array[0:2]
+            int_value_be = int.from_bytes(firstReg, byteorder='little')
+            reg_list.append(int_value_be)
+            lostReg = int_byte_array[2:4]
+            int_value_be = int.from_bytes(lostReg, byteorder='little')
+            reg_list.append(int_value_be)
+
         number = 12345
         int_byte_array = number.to_bytes(4, byteorder='little')
         for i in range(13):
-            reg_list.append(int_byte_array[0])
-            reg_list.append(int_byte_array[1])
-            reg_list.append(int_byte_array[2])
-            reg_list.append(int_byte_array[3])
+                int_byte_array=number.to_bytes(4, byteorder='little')
+                firstReg = int_byte_array[0:2]
+                int_value_be = int.from_bytes(firstReg, byteorder='little')
+                reg_list.append(int_value_be)
+                lostReg = int_byte_array[2:4]
+                int_value_be = int.from_bytes(lostReg, byteorder='little')
+                reg_list.append(int_value_be)
         for i in range(80):
-            reg_list.append(floatValueTobytes[0])
-            reg_list.append(floatValueTobytes[1])
-            reg_list.append(floatValueTobytes[2])
-            reg_list.append(floatValueTobytes[3])
+            firstReg = floatValueTobytes[0:2]
+            int_value_be = int.from_bytes(firstReg, byteorder='little')
+            reg_list.append(int_value_be)
+            lostReg = floatValueTobytes[2:4]
+            int_value_be = int.from_bytes(lostReg, byteorder='little')
+            reg_list.append(int_value_be)
+
         empty_tuple = tuple(reg_list)
         out1 = server.get_slave(1).set_values("1", 0, (0x6720,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         out2 = server.get_slave(1).set_values("2", 0, empty_tuple)
@@ -776,41 +786,49 @@ def modBServ (arg):
                     values1 = server.get_slave(1).get_values('1', 0, 25)
                     values2 = server.get_slave(1).get_values('2', 0, 25)
                     #### чтение значений регистров
-                    values3 = server.get_slave(1).get_values('3', wrRegAddr, 0x60*4)
+                    values3 = server.get_slave(1).get_values('3', wrRegAddr, 0x60*2)
 
-                    chunk_size = 4
+                    chunk_size = 2
                     result = [values3[i:i + chunk_size] for i in range(0, len(values3), chunk_size)]
                     #print(result)
                     reg_list_read = []
                     nomer = 0;
                     for my_tuple in result:
-                        nomer=nomer+4
-                        if (nomer < (17*4)):
-                            byte_data = bytes(my_tuple)
-                            int_value = int.from_bytes(byte_data, byteorder='little', signed=False) #little #big
+                        nomer=nomer+2
+                        if (nomer < (17*2)):
+                            b1 = my_tuple[0].to_bytes(2, 'little')
+                            b2 = my_tuple[1].to_bytes(2, 'little')
+                            byte_data_int = b1 + b2
+                            int_value = int.from_bytes(byte_data_int, byteorder='little', signed=False) #little #big
                             reg_list_read.append(int_value)
                         else:
-                            byte_data = bytes(my_tuple)
-                            float_value = struct.unpack('f', byte_data)[0]
+                            b1 = my_tuple[0].to_bytes(2, 'little')
+                            b2 = my_tuple[1].to_bytes(2, 'little')
+                            byte_data_float = b1 + b2
+                            float_value = struct.unpack('f', byte_data_float)[0]
                             reg_list_read.append(float_value)
 
                     ############################################################
-                    values4 = server.get_slave(1).get_values('4', wrRegAddr, 0x60*4)
+                    values4 = server.get_slave(1).get_values('4', wrRegAddr, 0x60*2)
 
-                    chunk_size = 4
+                    chunk_size = 2
                     result = [values4[i:i + chunk_size] for i in range(0, len(values4), chunk_size)]
                     #print(result)
                     reg_list_write = []
                     nomer = 0;
                     for my_tuple in result:
-                        nomer=nomer+4
-                        if (nomer < (17*4)):
-                            byte_data = bytes(my_tuple)
-                            int_value = int.from_bytes(byte_data, byteorder='little', signed=False) #little #big
+                        nomer=nomer+2
+                        if (nomer < (17*2)):
+                            b1 = my_tuple[0].to_bytes(2, 'little')
+                            b2 = my_tuple[1].to_bytes(2, 'little')
+                            byte_data_int = b1 + b2
+                            int_value = int.from_bytes(byte_data_int, byteorder='little', signed=False) #little #big
                             reg_list_write.append(int_value)
                         else:
-                            byte_data = bytes(my_tuple)
-                            float_value = struct.unpack('f', byte_data)[0]
+                            b1 = my_tuple[0].to_bytes(2, 'little')
+                            b2 = my_tuple[1].to_bytes(2, 'little')
+                            byte_data_float = b1 + b2
+                            float_value = struct.unpack('f', byte_data_float)[0]
                             reg_list_write.append(float_value)
 
                     ############################################################

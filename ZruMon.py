@@ -14,11 +14,11 @@ import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
 import struct
 
-revForPO = "23";
+revForPO = "24";
 StertCmdForModBus = "set_values 1 3 1 4 5 6 7 8 7 "+revForPO;
 CmdDateForModBus = "1 3 1 4 5 6 7 8 7 "+revForPO;
 cmdForModBus = StertCmdForModBus
-wrRegAddr = 500
+wrRegAddr = 0
 
 import requests
 import os
